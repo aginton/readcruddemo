@@ -4,10 +4,13 @@ import com.example.demo.exception.EmployeeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class EmployeeController {
     @Autowired
@@ -23,16 +26,45 @@ public class EmployeeController {
         return repo.findById(id).orElseThrow(()->new EmployeeNotFoundException(id));
     }
 
+//    @GetMapping("/getActiveEmployees")
+//    public List<Employee> getActiveEmployees(){
+//        List<Employee> res = new ArrayList<>();
+//        for (Employee employee: repo.findAll()){
+//            if (employee.getStatus()!=0){
+//                res.add(employee);
+//            }
+//        }
+//        return res;
+//    }
+
     @GetMapping("/getActiveEmployees")
     public List<Employee> getActiveEmployees(){
         List<Employee> res = new ArrayList<>();
+
+        LocalTime now = LocalTime.now();
+
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        System.out.printf("The day of the week is %d\n", day);
+
         for (Employee employee: repo.findAll()){
-            if (employee.getStatus()!=0){
+            if (employee.isWorkingNow(day, now)){
                 res.add(employee);
             }
         }
         return res;
     }
+
+//    @GetMapping("/getCurrentlyWorkingEmployees")
+//    public List<Employee> getActiveEmployees(){
+//        List<Employee> res = new ArrayList<>();
+//        for (Employee employee: repo.findAll()){
+//            if (employee.getStatus()!=0){
+//                res.add(employee);
+//            }
+//        }
+//        return res;
+//    }
 
     @PostMapping("/addEmployee")
     public Employee addEmployee(@RequestBody Employee employee){
@@ -51,6 +83,7 @@ public class EmployeeController {
             if (employeeDetails.getName() != null){
                 employee.setName((employeeDetails.getName()));
             }
+            employee.setWorkWeek(employeeDetails.getWorkWeek());
             return repo.save(employee);
         }).orElseGet(()->{
             employeeDetails.setId(id);
