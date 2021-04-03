@@ -1,15 +1,14 @@
 package com.example.demo.model;
 
-import com.example.demo.exception.EmployeeIdTakenException;
+import com.example.demo.exception.EmployeeIdArgException;
 import com.example.demo.exception.EmployeeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -27,30 +26,50 @@ public class EmployeeController {
         return repo.findById(id).orElseThrow(()->new EmployeeNotFoundException(id));
     }
 
+
     @GetMapping("/getActiveEmployees")
-    public List<Employee> getActiveEmployees(){
+    public ResponseEntity<Object> getActiveEmployees(){
         List<Employee> res = new ArrayList<>();
-
         LocalTime now = LocalTime.now();
-
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_WEEK);
-
-        System.out.printf("The day of the week is %d\n", day);
-
-        for (Employee employee: repo.findAll()){
-            if (employee.isWorkingNow(day, now)){
-                res.add(employee);
+        try{
+            for (Employee employee: repo.findAll()){
+                if (employee.isWorkingNow(day, now)){
+                    res.add(employee);
+                }
             }
+            return new ResponseEntity<Object>(res.toString(), HttpStatus.OK);
+        } catch(Exception e){
+            return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return res;
+
     }
+//    @GetMapping("/getActiveEmployees")
+//    public List<Employee> getActiveEmployees(){
+//        List<Employee> res = new ArrayList<>();
+//
+//        LocalTime now = LocalTime.now();
+//
+//        Calendar cal = Calendar.getInstance();
+//        int day = cal.get(Calendar.DAY_OF_WEEK);
+//
+//        System.out.printf("The day of the week is %d\n", day);
+//
+//        for (Employee employee: repo.findAll()){
+//            if (employee.isWorkingNow(day, now)){
+//                res.add(employee);
+//            }
+//        }
+//        return res;
+//    }
+
 
     @GetMapping("/getEmployeesInArea")
-    public List<Employee> getEmployeesInArea(@RequestBody Rectangle rectangle){
+    public List<Employee> getEmployeesInArea(@RequestBody Circle circle){
         List<Employee> res = new ArrayList<>();
         for (Employee employee: repo.findAll()){
-            if (employee.getLocation().isWithinRectangle(rectangle)){
+            if (employee.getLocation().isWithinCircle(circle)){
                 res.add(employee);
             }
         }
@@ -58,34 +77,42 @@ public class EmployeeController {
     }
 
     @PostMapping("/addEmployee")
-    public Employee addEmployee(@RequestBody Employee employee){
+    public ResponseEntity<String> addEmployee(@RequestBody Employee employee){
         if (employee.getId() != null){
-            if (repo.findById(employee.getId()) != null){
-                throw new EmployeeIdTakenException(employee.getId());
-            }
+            return new ResponseEntity<>(new EmployeeIdArgException().getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return repo.save(employee);
+        repo.save(employee);
+        return new ResponseEntity<>("Successfully created following employee: \n" + employee, HttpStatus.OK);
     }
 
     @PutMapping("/updateEmployee/{id}")
-    public Employee updateEmployee(@PathVariable(value="id") Long id, @RequestBody Employee employeeDetails){
-        return repo.findById(id).map(employee -> {
-            employee.setAddress(employeeDetails.getAddress());
-            employee.setAge(employeeDetails.getAge());
-            employee.setName((employeeDetails.getName()));
-            employee.setWorkWeek(employeeDetails.getWorkWeek());
-            employee.setLocation(employeeDetails.getLocation());
-            return repo.save(employee);
-        }).orElseGet(()->{
+    public ResponseEntity<String> updateEmployee(@PathVariable(value="id") Long id, @RequestBody Employee employeeDetails){
+        if (employeeDetails.getId() != null){
+            return new ResponseEntity<>(new EmployeeIdArgException().getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        Employee employee = repo.findById(id).get();
+        if (employee != null){
             employeeDetails.setId(id);
-            return repo.save(employeeDetails);
-        });
+            employee = employeeDetails;
+            repo.save(employee);
+            return new ResponseEntity<>("Successfully updated employee: \n" + employee, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(new EmployeeNotFoundException(id).getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/deleteEmployee/{id}")
-    public void updateStatus(@PathVariable(value="id") Long id){
-        Optional<Employee> employee=repo.findById(id);
-        Employee foundEmp=employee.get();
-        repo.delete(foundEmp);
+    public ResponseEntity<String> updateStatus(@PathVariable(value="id") Long id){
+        try{
+            Optional<Employee> employee=repo.findById(id);
+            Employee foundEmp=employee.get();
+            repo.delete(foundEmp);
+            return new ResponseEntity<>("Employee id " + id + " successfully deleted.", HttpStatus.OK);
+        }
+        catch(NoSuchElementException e){
+            throw new EmployeeNotFoundException(id);
+        }
+
     }
 }

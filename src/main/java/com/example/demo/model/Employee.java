@@ -19,7 +19,6 @@ public class Employee {
     private String address;
     private Integer age;
     private Point location = new Point();
-
     @ElementCollection
     private Map<String, WorkDay> workWeek;
 
@@ -27,11 +26,11 @@ public class Employee {
     public Employee(){}
 
     public Employee(Employee employee_details){
-        setName(employee_details.getName());
-        setLocation(employee_details.getLocation());
-        setAddress(employee_details.getAddress());
         setId(employee_details.getId());
+        setName(employee_details.getName());
         setAge(employee_details.getAge());
+        setAddress(employee_details.getAddress());
+        setLocation(employee_details.getLocation());
         setWorkWeek(employee_details.getWorkWeek());
     }
 
@@ -83,15 +82,9 @@ public class Employee {
         }
     }
 
-    public boolean isWorkingNow(int day, LocalTime now) {
-        System.out.printf("Is %s working today?: ", getName());
+    public boolean isWorkingNow(int day, LocalTime now) throws Exception {
         if (getWorkWeek() == null){
-            System.out.printf("getWorkWeek() for %s returned null!", getName());
-            return false;
-        }
-        if (day < 1 || day > 7){
-            System.out.printf("getWorkWeek() called with invalid day id %d!", day);
-            return false;
+            throw new Exception("getWorkWeek() for " + getName() + " returned null!");
         }
         String day_str = CONSTANTS.getDaysOfWeek().get(day-1);
         boolean ans = false;
@@ -109,5 +102,17 @@ public class Employee {
 
     public void setLocation(Point location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", age=" + age +
+                ", location=" + location +
+                ", workWeek=" + workWeek +
+                '}';
     }
 }

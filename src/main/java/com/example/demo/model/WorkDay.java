@@ -41,4 +41,12 @@ public class WorkDay {
         System.out.println("worksAtTime called!");
         return ((startTime.equals(now) || startTime.isBefore(now)) && endTime.isAfter(now));
     }
+
+    @Override
+    public String toString() {
+        return "WorkDay{" +
+                "startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }
