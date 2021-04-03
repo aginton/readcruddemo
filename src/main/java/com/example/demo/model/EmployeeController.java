@@ -34,6 +34,7 @@ public class EmployeeController {
 
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_WEEK);
+
         System.out.printf("The day of the week is %d\n", day);
 
         for (Employee employee: repo.findAll()){

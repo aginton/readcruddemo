@@ -57,6 +57,7 @@ public class WorkDay {
     }
 
     public boolean worksAtTime(LocalTime now) {
+        System.out.println("worksAtTime called!");
         return ((startTime.equals(now) || startTime.isBefore(now)) && endTime.isAfter(now));
     }
 }

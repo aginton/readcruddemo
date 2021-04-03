@@ -1,7 +1,12 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -15,18 +20,28 @@ public class Employee {
     private Integer age;
     private Point location = new Point();
 
-    @Embedded
-    private WorkWeek workWeek = new WorkWeek();
-    //@ElementCollection
-//    @OneToMany
-//    private List<WorkDay> workWeek;
+    @ElementCollection
+    private Map<String, WorkDay> workWeek;
+
 
     public Employee(){}
     public Employee(String name, String address, Integer age) {
         this.name = name;
         this.address = address;
         this.age = age;
-        //this.workWeek;
+        workWeek = new HashMap<>();
+        for (String day: CONSTANTS.getDaysOfWeek()){
+            workWeek.put(day, null);
+        }
+    }
+
+    public Employee(Employee employee_details){
+        setName(employee_details.getName());
+        setLocation(employee_details.getLocation());
+        setAddress(employee_details.getAddress());
+        setId(employee_details.getId());
+        setAge(employee_details.getAge());
+        setWorkWeek(employee_details.getWorkWeek());
     }
 
     public Long getId() {
@@ -61,29 +76,47 @@ public class Employee {
         this.age = age;
     }
 
-    public void updateWorkDay(Integer day, LocalTime start, LocalTime end){
-        workWeek.updateDay(day, start, end);
-    }
-//
-    public WorkWeek getWorkWeek() {
+
+    public Map<String, WorkDay> getWorkWeek() {
         return workWeek;
     }
 
-    public void setWorkWeek(WorkWeek workWeek) {
-        this.workWeek = workWeek;
+    public void setWorkWeek(Map<String, WorkDay> workWeek) {
+        this.workWeek = new HashMap<>();
+        List<String> days = CONSTANTS.getDaysOfWeek();
+//        HashMap<String, Object> map = new HashMap<String, Object>();
+//        ObjectMapper mapper = new ObjectMapper();
+//        try{
+//
+//        }
+
+        for (Map.Entry<String, WorkDay> entry: workWeek.entrySet()){
+            if (CONSTANTS.getDaysOfWeek().contains(entry.getKey())){
+                this.workWeek.put(entry.getKey(), new WorkDay(entry.getValue()));
+            }
+        }
     }
 
     public boolean isWorkingNow(int day, LocalTime now) {
-        if (getWorkWeek() == null) return false;
-        System.out.printf("Does %s work today?\n", getName());
-        WorkDay workDay = workWeek.getWorkDay(day);
-        if (workDay != null){
-            System.out.printf("%s is working today!\n", getName());
-            return workDay.worksAtTime(now);
+        System.out.printf("Is %s working today?: ", getName());
+        if (getWorkWeek() == null){
+            System.out.printf("getWorkWeek() for %s returned null!", getName());
+            return false;
         }
-        System.out.printf("%s does NOT work today!\n", getName());
-        return false;
+        if (day < 1 || day > 7){
+            System.out.printf("getWorkWeek() called with invalid day id %d!", day);
+            return false;
+        }
+        String day_str = CONSTANTS.getDaysOfWeek().get(day-1);
+        System.out.printf("Does Sinbad work on day %s?\n", day_str);
+        boolean ans = false;
+        WorkDay workDay = workWeek.get(day_str);
+        if (workDay != null){
+            ans = workDay.worksAtTime(now);
+        }
+        return ans;
     }
+
 
     public Point getLocation() {
         return location;
