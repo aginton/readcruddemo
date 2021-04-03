@@ -6,8 +6,6 @@ import java.time.LocalTime;
 
 @Embeddable
 public class WorkDay {
-//    private Time startTime;
-//    private Time endTime;
     private LocalTime startTime;
     private LocalTime endTime;
 
@@ -22,23 +20,6 @@ public class WorkDay {
         this.startTime = startTime;
         this.endTime = endTime;
     }
-
-    //    public Time getStartTime() {
-//        return startTime;
-//    }
-//
-//    public void setStartTime(Time startTime) {
-//        this.startTime = startTime;
-//    }
-//
-//    public Time getEndTime() {
-//        return endTime;
-//    }
-//
-//    public void setEndTime(Time endTime) {
-//        this.endTime = endTime;
-//    }
-
 
     public LocalTime getStartTime() {
         return startTime;

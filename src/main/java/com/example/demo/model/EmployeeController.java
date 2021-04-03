@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.exception.EmployeeIdTakenException;
 import com.example.demo.exception.EmployeeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class EmployeeController {
         return repo.findAll();
     }
 
-    @GetMapping("getEmployeeById")
-    public Employee getEmployeeById(Long id){
+    @GetMapping("getEmployeeById/{id}")
+    public Employee getEmployeeById(@PathVariable(value = "id") Long id){
         return repo.findById(id).orElseThrow(()->new EmployeeNotFoundException(id));
     }
 
@@ -58,6 +59,11 @@ public class EmployeeController {
 
     @PostMapping("/addEmployee")
     public Employee addEmployee(@RequestBody Employee employee){
+        if (employee.getId() != null){
+            if (repo.findById(employee.getId()) != null){
+                throw new EmployeeIdTakenException(employee.getId());
+            }
+        }
         return repo.save(employee);
     }
 

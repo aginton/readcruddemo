@@ -14,4 +14,11 @@ public class EmployeeExceptionAdvice {
     public String employeeNotFoundHandler(EmployeeNotFoundException ex){
         return ex.getMessage();
     }
+
+    @ResponseBody
+    @ExceptionHandler(EmployeeIdTakenException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String employeeNotFoundHandler(EmployeeIdTakenException ex){
+        return ex.getMessage();
+    }
 }

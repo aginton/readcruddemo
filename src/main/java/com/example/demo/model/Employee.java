@@ -25,15 +25,6 @@ public class Employee {
 
 
     public Employee(){}
-//    public Employee(String name, String address, Integer age) {
-//        this.name = name;
-//        this.address = address;
-//        this.age = age;
-//        workWeek = new HashMap<>();
-//        for (String day: CONSTANTS.getDaysOfWeek()){
-//            workWeek.put(day, null);
-//        }
-//    }
 
     public Employee(Employee employee_details){
         setName(employee_details.getName());
@@ -103,7 +94,6 @@ public class Employee {
             return false;
         }
         String day_str = CONSTANTS.getDaysOfWeek().get(day-1);
-        System.out.printf("Does Sinbad work on day %s?\n", day_str);
         boolean ans = false;
         WorkDay workDay = workWeek.get(day_str);
         if (workDay != null){
