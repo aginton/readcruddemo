@@ -25,15 +25,15 @@ public class Employee {
 
 
     public Employee(){}
-    public Employee(String name, String address, Integer age) {
-        this.name = name;
-        this.address = address;
-        this.age = age;
-        workWeek = new HashMap<>();
-        for (String day: CONSTANTS.getDaysOfWeek()){
-            workWeek.put(day, null);
-        }
-    }
+//    public Employee(String name, String address, Integer age) {
+//        this.name = name;
+//        this.address = address;
+//        this.age = age;
+//        workWeek = new HashMap<>();
+//        for (String day: CONSTANTS.getDaysOfWeek()){
+//            workWeek.put(day, null);
+//        }
+//    }
 
     public Employee(Employee employee_details){
         setName(employee_details.getName());
@@ -84,11 +84,6 @@ public class Employee {
     public void setWorkWeek(Map<String, WorkDay> workWeek) {
         this.workWeek = new HashMap<>();
         List<String> days = CONSTANTS.getDaysOfWeek();
-//        HashMap<String, Object> map = new HashMap<String, Object>();
-//        ObjectMapper mapper = new ObjectMapper();
-//        try{
-//
-//        }
 
         for (Map.Entry<String, WorkDay> entry: workWeek.entrySet()){
             if (CONSTANTS.getDaysOfWeek().contains(entry.getKey())){
