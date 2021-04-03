@@ -1,15 +1,7 @@
 package com.example.demo.model;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.jdbc.Work;
-
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 
 @Entity
@@ -21,8 +13,7 @@ public class Employee {
     private String name;
     private String address;
     private Integer age;
-    @Column(columnDefinition = "int default 0")
-    private Integer status = 0;
+    private Point location = new Point();
 
     @Embedded
     private WorkWeek workWeek = new WorkWeek();
@@ -70,14 +61,6 @@ public class Employee {
         this.age = age;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public void updateWorkDay(Integer day, LocalTime start, LocalTime end){
         workWeek.updateDay(day, start, end);
     }
@@ -100,5 +83,13 @@ public class Employee {
         }
         System.out.printf("%s does NOT work today!\n", getName());
         return false;
+    }
+
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
     }
 }
