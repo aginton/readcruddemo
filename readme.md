@@ -47,7 +47,8 @@ a circle to search through (i.e., body should be of format {center: {x: , y:}, r
 </p>
 
 <h2> Notes </h2>
-<ul>To provide arguments in request body using postman, select "Body" radio button, then "raw" and set type to "JSON" </ul>
+<ul>
+<li>To provide arguments in request body using postman, select "Body" radio button, then "raw" and set type to "JSON"</li> 
 
 <ul>
 <li>You can see tables in database and query data with regular mysql using mysql shell or workbench: </li> 
