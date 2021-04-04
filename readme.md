@@ -1,6 +1,6 @@
-Prerequisites: have mysql installed on local computer
 
-How to use:
+<h1>How to use backend services:</h1>
+Prerequisites: have mysql installed on local computer
 <h2> 1) Configure application</h2> 
 Configure mysql login data and initialization data under src->main->resources->application.properties.
 Enter personal spring.datasource.username and spring.datasource.password
@@ -50,7 +50,6 @@ a circle to search through (i.e., body should be of format {center: {x: , y:}, r
 <ul>
 <li>To provide arguments in request body using postman, select "Body" radio button, then "raw" and set type to "JSON"</li> 
 
-<ul>
 <li>You can see tables in database and query data with regular mysql using mysql shell or workbench: </li> 
 <p align="center">
   <img src="snapshots/mysql.PNG" width="350" title="mysql">
@@ -61,4 +60,28 @@ addEmployee or updateEmployee, an error response will be returned: </li>
 <p align="center">
   <img src="snapshots/iderror.PNG" width="350" title="iderror">
 </p>
+</ul>
+
+<h1>How to use front services (in progress):</h1>
+prerequisites: have node.js installed 
+
+<h2>1) install dependencies</h2>
+Navigate to frontend/readcruddemo-front in terminal, and install node modules using npm install
+<h2>2) run npm start</h2>
+Make sure backend server is already running, then enter "npm start" from within frontend/readcruddemo-front directory.
+<h2>3) begin adding new users</h2>
+When React starts, it will open up a new browser at localhost:3000, which shows a list of all employees currently in db
+<p align="center">
+  <img src="snapshots/homepage.PNG" width="350" title="homepage">
+</p>
+
+To add a new employee, click on "Add new employee" button and enter details. At the moment, only a name and age are required.
+<p align="center">
+  <img src="snapshots/addForm.PNG" width="350" title="addForm">
+</p>
+<h2>TODO</h2>
+<ul>
+<li>initialize form data with employee details after clicking "view/update"</li>
+<li>implement delete</li>
+<li>change headers based on service</li>
 </ul>
