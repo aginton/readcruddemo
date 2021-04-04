@@ -43,7 +43,7 @@ To get all employees within a given area, you must supply in request body a json
 a circle to search through (i.e., body should be of format {center: {x: , y:}, radius: })
 
 <p align="center">
-  <img src="snapshots/getInArea.PNG" width="350" title="getInArea">
+  <img src="/snapshots/getInArea.PNG" width="350" title="getInArea">
 </p>
 
 <h2> Notes </h2>
